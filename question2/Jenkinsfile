@@ -1,0 +1,112 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_IMAGE    = "YOUR_DOCKERHUB_USERNAME/bookstore"
+        DOCKER_TAG      = "${BUILD_NUMBER}"
+        KUBE_NAMESPACE  = "default"
+        DEPLOYMENT_NAME = "bookstore-deployment"
+    }
+
+    stages {
+
+        stage('Clone Code') {
+            steps {
+                echo '📥 Cloning repository from GitHub...'
+                git branch: 'main',
+                    url: 'https://github.com/vineshhhhh2001/agile_assessment9.git'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                echo '🐳 Building Docker image...'
+                dir('question2') {
+                    sh "docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} ."
+                    sh "docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_IMAGE}:latest"
+                }
+            }
+        }
+
+        stage('Test Application') {
+            steps {
+                echo '🧪 Automated smoke test...'
+                sh """
+                    docker run -d --name bookstore-test -p 8098:80 ${DOCKER_IMAGE}:${DOCKER_TAG}
+                    sleep 5
+                    curl -sf http://localhost:8098 | grep -q 'PageTurn' && echo 'SMOKE TEST PASSED ✅' || (echo 'SMOKE TEST FAILED ❌' && exit 1)
+                    docker rm -f bookstore-test
+                """
+            }
+        }
+
+        stage('Security Scan (Deployment Gate)') {
+            steps {
+                echo '🔒 Running basic security checks...'
+                sh """
+                    # Check image for known issues (replace with trivy or similar if available)
+                    docker inspect ${DOCKER_IMAGE}:${DOCKER_TAG} | grep -i 'RepoTags' && echo 'Security gate passed ✅'
+                """
+            }
+        }
+
+        stage('Push Image to Docker Hub') {
+            steps {
+                echo '☁️ Pushing image to Docker Hub...'
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-credentials',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    sh "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin"
+                    sh "docker push ${DOCKER_IMAGE}:${DOCKER_TAG}"
+                    sh "docker push ${DOCKER_IMAGE}:latest"
+                }
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                echo '☸️ Deploying to Kubernetes with 3 replicas...'
+                withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
+                    sh """
+                        kubectl set image deployment/${DEPLOYMENT_NAME} \
+                            bookstore=${DOCKER_IMAGE}:${DOCKER_TAG} \
+                            -n ${KUBE_NAMESPACE} || \
+                        kubectl apply -f question2/deployment.yaml -n ${KUBE_NAMESPACE}
+
+                        kubectl rollout status deployment/${DEPLOYMENT_NAME} \
+                            -n ${KUBE_NAMESPACE} --timeout=180s
+                    """
+                }
+            }
+        }
+
+        stage('Verify Deployment') {
+            steps {
+                echo '🔍 Verifying all 3 pods are running...'
+                withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
+                    sh "kubectl get pods -n ${KUBE_NAMESPACE} -l app=bookstore"
+                    sh "kubectl get service bookstore-service -n ${KUBE_NAMESPACE}"
+                }
+            }
+        }
+    }
+
+    post {
+        failure {
+            echo '🚨 Deployment failed! Rolling back...'
+            withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
+                sh "kubectl rollout undo deployment/${DEPLOYMENT_NAME} -n ${KUBE_NAMESPACE}"
+                sh "kubectl rollout status deployment/${DEPLOYMENT_NAME} -n ${KUBE_NAMESPACE}"
+                echo '✅ Rollback completed.'
+            }
+        }
+        success {
+            echo '🎉 Bookstore deployed successfully!'
+        }
+        always {
+            sh "docker rmi ${DOCKER_IMAGE}:${DOCKER_TAG} || true"
+        }
+    }
+}

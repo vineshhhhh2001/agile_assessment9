@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="College Event Management Portal – browse, register, and track technical symposiums, hackathons, workshops, cultural fests and inter-college competitions." />
+  <title>EventSphere – College Event Management Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #07090f;
+      --bg-card: #0f1220;
+      --bg-surface: #151929;
+      --accent-pink: #ec4899;
+      --accent-violet: #8b5cf6;
+      --accent-cyan: #06b6d4;
+      --accent-green: #10b981;
+      --accent-orange: #f59e0b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: rgba(255,255,255,0.07);
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); }
+
+    /* NAV */
+    nav {
+      position:sticky; top:0; z-index:200;
+      background: rgba(7,9,15,0.88);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      display:flex; align-items:center; justify-content:space-between;
+      padding: 0 2rem; height:66px;
+    }
+    .logo { font-size:1.3rem; font-weight:900; letter-spacing:-0.5px; }
+    .logo em { font-style:normal; background:linear-gradient(90deg,var(--accent-pink),var(--accent-violet)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    .nav-links { display:flex; gap:1.75rem; list-style:none; }
+    .nav-links a { color:var(--text-muted); text-decoration:none; font-size:0.85rem; font-weight:500; transition:color 0.2s; }
+    .nav-links a:hover { color:var(--accent-pink); }
+    .nav-register {
+      background:linear-gradient(135deg,var(--accent-pink),var(--accent-violet));
+      color:#fff; border:none; border-radius:10px;
+      padding:0.55rem 1.3rem; font-size:0.875rem; font-weight:700;
+      cursor:pointer; transition:transform 0.2s, box-shadow 0.2s;
+    }
+    .nav-register:hover { transform:translateY(-1px); box-shadow:0 4px 18px rgba(236,72,153,0.35); }
+
+    /* HERO */
+    .hero {
+      min-height: 540px;
+      background: radial-gradient(ellipse at 20% 50%, rgba(139,92,246,0.18) 0%, transparent 50%),
+                  radial-gradient(ellipse at 80% 20%, rgba(236,72,153,0.15) 0%, transparent 50%),
+                  linear-gradient(180deg, #07090f 0%, #0a0d1f 100%);
+      display:flex; align-items:center; justify-content:center;
+      flex-direction:column; text-align:center;
+      padding: 5rem 2rem;
+      position:relative; overflow:hidden;
+    }
+    .floating-shapes span {
+      position:absolute; border-radius:50%;
+      animation: float 6s infinite ease-in-out;
+    }
+    .floating-shapes span:nth-child(1) { width:300px;height:300px; background:radial-gradient(circle,rgba(139,92,246,0.08),transparent); top:-100px; left:-100px; animation-delay:0s; }
+    .floating-shapes span:nth-child(2) { width:200px;height:200px; background:radial-gradient(circle,rgba(236,72,153,0.08),transparent); top:50px; right:10%; animation-delay:2s; }
+    .floating-shapes span:nth-child(3) { width:150px;height:150px; background:radial-gradient(circle,rgba(6,182,212,0.08),transparent); bottom:0; left:20%; animation-delay:4s; }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-20px)} }
+
+    .hero-chip {
+      display:inline-block;
+      background:rgba(236,72,153,0.12); border:1px solid rgba(236,72,153,0.3);
+      color:var(--accent-pink); padding:0.35rem 1rem; border-radius:999px;
+      font-size:0.75rem; font-weight:700; letter-spacing:0.06em; text-transform:uppercase;
+      margin-bottom:1.25rem; position:relative;
+    }
+    .hero h1 {
+      font-size:clamp(2.2rem,5.5vw,4rem);
+      font-weight:900; line-height:1.1; margin-bottom:1.25rem;
+      position:relative;
+    }
+    .hero h1 .grad {
+      background:linear-gradient(135deg, var(--accent-pink), var(--accent-violet), var(--accent-cyan));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    }
+    .hero p { color:var(--text-muted); max-width:580px; margin:0 auto 2.5rem; font-size:1.05rem; line-height:1.75; position:relative; }
+    .hero-actions { display:flex; gap:1rem; flex-wrap:wrap; justify-content:center; position:relative; }
+    .btn-glow {
+      background:linear-gradient(135deg,var(--accent-pink),var(--accent-violet));
+      color:#fff; border:none; border-radius:12px;
+      padding:0.9rem 2.2rem; font-size:1rem; font-weight:700; cursor:pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-glow:hover { transform:translateY(-2px); box-shadow:0 10px 30px rgba(236,72,153,0.35); }
+    .btn-ghost {
+      background:transparent; border:1px solid var(--border); color:var(--text);
+      border-radius:12px; padding:0.9rem 2.2rem; font-size:1rem; font-weight:600;
+      cursor:pointer; transition:border-color 0.2s, background 0.2s;
+    }
+    .btn-ghost:hover { border-color:var(--accent-violet); background:rgba(139,92,246,0.08); }
+
+    /* STATS STRIP */
+    .stats-strip {
+      background:var(--bg-card);
+      border-top:1px solid var(--border); border-bottom:1px solid var(--border);
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+      padding:2rem;
+    }
+    .strip-stat { text-align:center; padding:0.5rem; }
+    .strip-stat-v { font-size:2rem; font-weight:900; background:linear-gradient(135deg,var(--accent-pink),var(--accent-violet)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    .strip-stat-l { font-size:0.75rem; color:var(--text-muted); font-weight:600; margin-top:0.2rem; }
+
+    /* EVENTS */
+    section.events { padding:4rem 2rem; max-width:1300px; margin:0 auto; }
+    .section-title { font-size:1.75rem; font-weight:800; margin-bottom:0.5rem; }
+    .section-sub { color:var(--text-muted); font-size:0.9rem; margin-bottom:2rem; }
+
+    .filter-bar { display:flex; gap:0.65rem; flex-wrap:wrap; margin-bottom:2rem; }
+    .filter-btn {
+      padding:0.4rem 1rem; border-radius:999px; font-size:0.78rem; font-weight:600;
+      border:1px solid var(--border); background:var(--bg-card); color:var(--text-muted);
+      cursor:pointer; transition: all 0.2s;
+    }
+    .filter-btn.active, .filter-btn:hover { background:var(--accent-violet); border-color:var(--accent-violet); color:#fff; }
+
+    .events-grid {
+      display:grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px,1fr));
+      gap:1.5rem;
+    }
+    .event-card {
+      background:var(--bg-card);
+      border:1px solid var(--border);
+      border-radius:20px; overflow:hidden;
+      transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+      cursor:pointer;
+    }
+    .event-card:hover {
+      transform:translateY(-6px);
+      box-shadow:0 24px 60px rgba(0,0,0,0.6);
+      border-color:rgba(139,92,246,0.4);
+    }
+    .event-banner {
+      height:150px;
+      display:flex; align-items:center; justify-content:center;
+      font-size:4rem; position:relative;
+    }
+    .event-type-badge {
+      position:absolute; top:12px; left:12px;
+      padding:0.28rem 0.75rem; border-radius:999px;
+      font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em;
+    }
+    .event-seats-badge {
+      position:absolute; top:12px; right:12px;
+      padding:0.28rem 0.75rem; border-radius:999px;
+      font-size:0.65rem; font-weight:700;
+      background:rgba(0,0,0,0.5);
+    }
+    .event-body { padding:1.25rem; }
+    .event-name { font-size:1rem; font-weight:800; margin-bottom:0.35rem; }
+    .event-desc { font-size:0.8rem; color:var(--text-muted); margin-bottom:1rem; line-height:1.5; }
+    .event-meta { display:flex; flex-direction:column; gap:0.4rem; margin-bottom:1rem; }
+    .event-meta-row { display:flex; align-items:center; gap:0.5rem; font-size:0.78rem; color:var(--text-muted); }
+    .event-meta-row strong { color:var(--text); font-weight:600; }
+    .register-btn {
+      width:100%;
+      background:linear-gradient(135deg,var(--accent-pink),var(--accent-violet));
+      border:none; border-radius:10px; padding:0.65rem;
+      color:#fff; font-weight:700; font-size:0.82rem; cursor:pointer;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+    .register-btn:hover { opacity:0.88; transform:scale(1.02); }
+    .register-btn.registered { background:linear-gradient(135deg,var(--accent-green),#059669); }
+    .register-btn:disabled { opacity:0.35; cursor:not-allowed; }
+
+    /* TYPE COLORS */
+    .type-hackathon   { background:rgba(236,72,153,0.2); color:var(--accent-pink); }
+    .type-symposium   { background:rgba(139,92,246,0.2); color:var(--accent-violet); }
+    .type-workshop    { background:rgba(6,182,212,0.2);  color:var(--accent-cyan); }
+    .type-cultural    { background:rgba(245,158,11,0.2); color:var(--accent-orange); }
+    .type-competition { background:rgba(16,185,129,0.2); color:var(--accent-green); }
+
+    .banner-hackathon   { background:linear-gradient(135deg,#3b0764,#1a0530); }
+    .banner-symposium   { background:linear-gradient(135deg,#1e1b4b,#0f0a2e); }
+    .banner-workshop    { background:linear-gradient(135deg,#083344,#042030); }
+    .banner-cultural    { background:linear-gradient(135deg,#451a03,#1c0a00); }
+    .banner-competition { background:linear-gradient(135deg,#052e16,#001a0b); }
+
+    /* SCHEDULE */
+    section.schedule { background:var(--bg-surface); padding:4rem 2rem; }
+    .schedule .inner { max-width:900px; margin:0 auto; }
+    .timeline { display:flex; flex-direction:column; gap:1rem; margin-top:1.5rem; }
+    .timeline-item {
+      background:var(--bg-card); border:1px solid var(--border);
+      border-radius:14px; padding:1.25rem 1.5rem;
+      display:flex; gap:1.5rem; align-items:center;
+      transition:border-color 0.2s;
+    }
+    .timeline-item:hover { border-color:var(--accent-violet); }
+    .tl-date {
+      min-width:64px; text-align:center;
+      background:linear-gradient(135deg,var(--accent-pink),var(--accent-violet));
+      border-radius:10px; padding:0.65rem 0.5rem;
+    }
+    .tl-day { font-size:1.6rem; font-weight:900; line-height:1; }
+    .tl-month { font-size:0.65rem; text-transform:uppercase; letter-spacing:0.08em; }
+    .tl-info { flex:1; }
+    .tl-title { font-weight:700; font-size:0.95rem; margin-bottom:0.2rem; }
+    .tl-sub { font-size:0.8rem; color:var(--text-muted); }
+    .tl-time { font-size:0.78rem; font-weight:700; color:var(--accent-cyan); }
+
+    /* REGISTRATION STATUS */
+    section.reg-status { padding:4rem 2rem; max-width:1000px; margin:0 auto; }
+    .reg-table { width:100%; border-collapse:collapse; }
+    .reg-table thead tr { background:var(--bg-surface); }
+    .reg-table th { padding:0.85rem 1.25rem; text-align:left; font-size:0.78rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.06em; }
+    .reg-table tbody tr { border-bottom:1px solid var(--border); transition:background 0.15s; }
+    .reg-table tbody tr:hover { background:rgba(255,255,255,0.03); }
+    .reg-table td { padding:0.85rem 1.25rem; font-size:0.85rem; }
+    .status-pill { display:inline-block; padding:0.25rem 0.7rem; border-radius:999px; font-size:0.7rem; font-weight:700; }
+    .status-confirmed { background:rgba(16,185,129,0.15); color:var(--accent-green); }
+    .status-pending   { background:rgba(245,158,11,0.15);  color:var(--accent-orange); }
+    .status-waitlist  { background:rgba(236,72,153,0.15);  color:var(--accent-pink); }
+
+    /* REGISTRATION MODAL */
+    .modal-overlay {
+      display:none; position:fixed; inset:0;
+      background:rgba(0,0,0,0.75); backdrop-filter:blur(6px);
+      z-index:500; align-items:center; justify-content:center;
+    }
+    .modal-overlay.open { display:flex; }
+    .modal {
+      background:var(--bg-card); border:1px solid var(--border);
+      border-radius:20px; width:min(460px,94vw); padding:2rem;
+    }
+    .modal h3 { font-size:1.2rem; font-weight:800; margin-bottom:1.5rem; }
+    .form-group { margin-bottom:1.1rem; }
+    .form-group label { display:block; font-size:0.8rem; font-weight:600; color:var(--text-muted); margin-bottom:0.4rem; }
+    .form-group input, .form-group select {
+      width:100%; background:var(--bg-surface); border:1px solid var(--border);
+      border-radius:10px; padding:0.65rem 1rem; color:var(--text);
+      font-family:'Inter',sans-serif; font-size:0.875rem; outline:none;
+      transition:border-color 0.2s;
+    }
+    .form-group input:focus, .form-group select:focus { border-color:var(--accent-violet); }
+    .form-actions { display:flex; gap:0.75rem; margin-top:1.5rem; }
+    .btn-submit {
+      flex:1; background:linear-gradient(135deg,var(--accent-pink),var(--accent-violet));
+      border:none; border-radius:10px; padding:0.75rem;
+      color:#fff; font-weight:700; cursor:pointer;
+    }
+    .btn-cancel {
+      background:var(--bg-surface); border:1px solid var(--border); border-radius:10px;
+      padding:0.75rem 1.25rem; color:var(--text-muted); cursor:pointer; font-weight:600;
+    }
+
+    /* NOTIFICATION / NEW FEATURE */
+    .announcements { padding:4rem 2rem; max-width:900px; margin:0 auto; }
+    .announce-card {
+      background:var(--bg-card); border:1px solid var(--border);
+      border-left:4px solid var(--accent-violet);
+      border-radius:14px; padding:1.25rem 1.5rem;
+      margin-bottom:1rem;
+      display:flex; gap:1rem; align-items:flex-start;
+      transition:border-color 0.2s;
+    }
+    .announce-card:hover { border-color:var(--accent-pink); }
+    .announce-icon { font-size:1.5rem; }
+    .announce-title { font-weight:700; margin-bottom:0.25rem; font-size:0.95rem; }
+    .announce-sub { color:var(--text-muted); font-size:0.8rem; }
+
+    footer {
+      background:var(--bg-card); border-top:1px solid var(--border);
+      padding:2.5rem 2rem; text-align:center;
+      color:var(--text-muted); font-size:0.875rem;
+    }
+    footer em { font-style:normal; color:var(--accent-pink); font-weight:600; }
+
+    @media(max-width:640px) { nav .nav-links{display:none;} }
+  </style>
+</head>
+<body>
+
+  <!-- REGISTRATION MODAL -->
+  <div class="modal-overlay" id="reg-modal">
+    <div class="modal">
+      <h3 id="modal-event-title">🎟️ Register for Event</h3>
+      <div class="form-group">
+        <label for="reg-name">Full Name</label>
+        <input type="text" id="reg-name" placeholder="Your full name" required />
+      </div>
+      <div class="form-group">
+        <label for="reg-roll">Roll Number</label>
+        <input type="text" id="reg-roll" placeholder="e.g., 21CS001" required />
+      </div>
+      <div class="form-group">
+        <label for="reg-email">Email Address</label>
+        <input type="email" id="reg-email" placeholder="you@college.edu" required />
+      </div>
+      <div class="form-group">
+        <label for="reg-dept">Department</label>
+        <select id="reg-dept">
+          <option>Computer Science</option>
+          <option>Information Technology</option>
+          <option>Electronics & Communication</option>
+          <option>Mechanical Engineering</option>
+          <option>Civil Engineering</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="reg-year">Year</label>
+        <select id="reg-year">
+          <option>1st Year</option>
+          <option>2nd Year</option>
+          <option>3rd Year</option>
+          <option>4th Year</option>
+        </select>
+      </div>
+      <div class="form-actions">
+        <button class="btn-cancel" id="modal-cancel-btn">Cancel</button>
+        <button class="btn-submit" id="modal-submit-btn">Confirm Registration</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <nav>
+    <div class="logo">🎪 Event<em>Sphere</em></div>
+    <ul class="nav-links">
+      <li><a href="#events">Events</a></li>
+      <li><a href="#schedule">Schedule</a></li>
+      <li><a href="#registrations">My Registrations</a></li>
+      <li><a href="#announcements">Announcements</a></li>
+    </ul>
+    <button class="nav-register" id="faculty-btn">Faculty Login</button>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="floating-shapes">
+      <span></span><span></span><span></span>
+    </div>
+    <div class="hero-chip">🎊 Semester Events 2025–26 Now Live</div>
+    <h1>One Portal for <span class="grad">All College Events</span></h1>
+    <p>Browse hackathons, symposiums, workshops, cultural fests, and inter-college competitions. Register, track status, and get notified — all in one place.</p>
+    <div class="hero-actions">
+      <button class="btn-glow" id="hero-explore-btn">Explore Events</button>
+      <button class="btn-ghost" id="hero-schedule-btn">View Schedule</button>
+    </div>
+  </header>
+
+  <!-- STATS -->
+  <div class="stats-strip">
+    <div class="strip-stat"><div class="strip-stat-v">25+</div><div class="strip-stat-l">Events This Semester</div></div>
+    <div class="strip-stat"><div class="strip-stat-v">4,200+</div><div class="strip-stat-l">Students Registered</div></div>
+    <div class="strip-stat"><div class="strip-stat-v">18</div><div class="strip-stat-l">Partner Colleges</div></div>
+    <div class="strip-stat"><div class="strip-stat-v">₹5L+</div><div class="strip-stat-l">Prize Pool</div></div>
+  </div>
+
+  <!-- EVENTS -->
+  <section class="events" id="events">
+    <div class="section-title">🎯 Upcoming Events</div>
+    <div class="section-sub">Browse and register for events happening this semester.</div>
+    <div class="filter-bar" id="filter-bar">
+      <button class="filter-btn active" data-type="all" id="flt-all">All Events</button>
+      <button class="filter-btn" data-type="hackathon"   id="flt-hackathon">🔥 Hackathon</button>
+      <button class="filter-btn" data-type="symposium"   id="flt-symposium">🎓 Symposium</button>
+      <button class="filter-btn" data-type="workshop"    id="flt-workshop">🛠️ Workshop</button>
+      <button class="filter-btn" data-type="cultural"    id="flt-cultural">🎭 Cultural</button>
+      <button class="filter-btn" data-type="competition" id="flt-competition">🏆 Competition</button>
+    </div>
+    <div class="events-grid" id="events-grid"></div>
+  </section>
+
+  <!-- SCHEDULE -->
+  <section class="schedule" id="schedule">
+    <div class="inner">
+      <div class="section-title">📅 Event Schedule</div>
+      <div class="section-sub">Upcoming event timeline at a glance.</div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="tl-date"><div class="tl-day">20</div><div class="tl-month">Oct</div></div>
+          <div class="tl-info">
+            <div class="tl-title">CodeStorm Hackathon – Phase 1</div>
+            <div class="tl-sub">Venue: Innovation Lab, Block C &nbsp;|&nbsp; Max: 120 teams</div>
+          </div>
+          <div class="tl-time">9:00 AM</div>
+        </div>
+        <div class="timeline-item">
+          <div class="tl-date"><div class="tl-day">25</div><div class="tl-month">Oct</div></div>
+          <div class="tl-info">
+            <div class="tl-title">TechVista National Symposium</div>
+            <div class="tl-sub">Venue: Main Auditorium &nbsp;|&nbsp; Max: 500 participants</div>
+          </div>
+          <div class="tl-time">10:00 AM</div>
+        </div>
+        <div class="timeline-item">
+          <div class="tl-date"><div class="tl-day">02</div><div class="tl-month">Nov</div></div>
+          <div class="tl-info">
+            <div class="tl-title">Cloud & DevOps Workshop</div>
+            <div class="tl-sub">Venue: Computer Lab A &nbsp;|&nbsp; Max: 60 students</div>
+          </div>
+          <div class="tl-time">2:00 PM</div>
+        </div>
+        <div class="timeline-item">
+          <div class="tl-date"><div class="tl-day">10</div><div class="tl-month">Nov</div></div>
+          <div class="tl-info">
+            <div class="tl-title">Culturals Fest – Kaleidoscope</div>
+            <div class="tl-sub">Venue: Open Air Theatre &nbsp;|&nbsp; All students welcome</div>
+          </div>
+          <div class="tl-time">4:00 PM</div>
+        </div>
+        <div class="timeline-item">
+          <div class="tl-date"><div class="tl-day">18</div><div class="tl-month">Nov</div></div>
+          <div class="tl-info">
+            <div class="tl-title">Inter-College Coding Contest</div>
+            <div class="tl-sub">Venue: Online (HackerRank) &nbsp;|&nbsp; Unlimited entries</div>
+          </div>
+          <div class="tl-time">11:00 AM</div>
+        </div>
+        <!-- NEW COMPANY / OPPORTUNITY ADDED -->
+        <div class="timeline-item">
+          <div class="tl-date" style="background:linear-gradient(135deg,var(--accent-cyan),#0284c7)"><div class="tl-day">25</div><div class="tl-month">Nov</div></div>
+          <div class="tl-info">
+            <div class="tl-title">🆕 StartUp Pitch Competition – New Event!</div>
+            <div class="tl-sub">Venue: Business Incubation Centre &nbsp;|&nbsp; Prize: ₹1,00,000</div>
+          </div>
+          <div class="tl-time">10:00 AM</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REGISTRATION STATUS -->
+  <section class="reg-status" id="registrations">
+    <div class="section-title">📋 My Registrations</div>
+    <div class="section-sub">Track the status of all your event registrations below.</div>
+    <br/>
+    <table class="reg-table">
+      <thead>
+        <tr>
+          <th>Event</th>
+          <th>Type</th>
+          <th>Date</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>CodeStorm Hackathon</td>
+          <td>Hackathon</td>
+          <td>Oct 20, 2025</td>
+          <td><span class="status-pill status-confirmed">Confirmed</span></td>
+        </tr>
+        <tr>
+          <td>TechVista Symposium</td>
+          <td>Symposium</td>
+          <td>Oct 25, 2025</td>
+          <td><span class="status-pill status-pending">Pending</span></td>
+        </tr>
+        <tr>
+          <td>Cloud & DevOps Workshop</td>
+          <td>Workshop</td>
+          <td>Nov 2, 2025</td>
+          <td><span class="status-pill status-waitlist">Waitlisted</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ANNOUNCEMENTS (New Feature Addition) -->
+  <section class="announcements" id="announcements">
+    <div class="section-title">📢 Event Announcements</div>
+    <div class="section-sub">Latest updates from faculty coordinators.</div>
+    <br/>
+    <div class="announce-card">
+      <div class="announce-icon">🆕</div>
+      <div>
+        <div class="announce-title">StartUp Pitch Competition Added!</div>
+        <div class="announce-sub">A brand-new startup pitch competition has been added for Nov 25. Prize pool of ₹1 lakh. Register before Nov 20. — Faculty Coordinator, Business Cell</div>
+      </div>
+    </div>
+    <div class="announce-card">
+      <div class="announce-icon">⚠️</div>
+      <div>
+        <div class="announce-title">CodeStorm Venue Change</div>
+        <div class="announce-sub">CodeStorm Hackathon Phase 1 has been moved from Block B to Innovation Lab, Block C. Kindly note the updated venue. — Dr. A. Kumar</div>
+      </div>
+    </div>
+    <div class="announce-card">
+      <div class="announce-icon">🎉</div>
+      <div>
+        <div class="announce-title">TechVista Registrations Extended</div>
+        <div class="announce-sub">Due to high demand, the registration deadline for TechVista National Symposium has been extended to Oct 22, 2025. — Placement &amp; Events Cell</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2025 <em>EventSphere</em> – College Event Management Portal. Built for students, powered by passion. 🎓</p>
+  </footer>
+
+  <script>
+    const events = [
+      {
+        id:1, name:"CodeStorm Hackathon",
+        type:"hackathon", icon:"🔥",
+        desc:"24-hour hackathon open to all branches. Build innovative solutions to real-world problems.",
+        date:"Oct 20, 2025", venue:"Innovation Lab, Block C",
+        seats:"120 spots left", prize:"₹50,000 Prize Pool",
+        bannerClass:"banner-hackathon", typeClass:"type-hackathon", typeLabel:"Hackathon"
+      },
+      {
+        id:2, name:"TechVista National Symposium",
+        type:"symposium", icon:"🎓",
+        desc:"Annual national-level technical symposium featuring paper presentations, guest lectures and workshops.",
+        date:"Oct 25, 2025", venue:"Main Auditorium",
+        seats:"300 spots left", prize:"Certificates + Cash Awards",
+        bannerClass:"banner-symposium", typeClass:"type-symposium", typeLabel:"Symposium"
+      },
+      {
+        id:3, name:"Cloud & DevOps Workshop",
+        type:"workshop", icon:"☁️",
+        desc:"Hands-on workshop covering Docker, Kubernetes, Jenkins CI/CD pipelines and cloud deployment.",
+        date:"Nov 2, 2025", venue:"Computer Lab A",
+        seats:"40 spots left", prize:"Industry Certificate",
+        bannerClass:"banner-workshop", typeClass:"type-workshop", typeLabel:"Workshop"
+      },
+      {
+        id:4, name:"Kaleidoscope – Cultural Fest",
+        type:"cultural", icon:"🎭",
+        desc:"Inter-college cultural extravaganza with dance, music, drama, art and fashion competitions.",
+        date:"Nov 10, 2025", venue:"Open Air Theatre",
+        seats:"Open", prize:"Trophies & Certificates",
+        bannerClass:"banner-cultural", typeClass:"type-cultural", typeLabel:"Cultural"
+      },
+      {
+        id:5, name:"Inter-College Coding Contest",
+        type:"competition", icon:"🏆",
+        desc:"Online competitive programming contest on HackerRank. Top 3 win cash prizes and internship referrals.",
+        date:"Nov 18, 2025", venue:"Online – HackerRank",
+        seats:"Unlimited", prize:"₹30,000 + Internships",
+        bannerClass:"banner-competition", typeClass:"type-competition", typeLabel:"Competition"
+      },
+      {
+        id:6, name:"StartUp Pitch Competition",
+        type:"competition", icon:"🚀",
+        desc:"Present your startup idea to a panel of VCs and industry leaders. Win seed funding and mentorship.",
+        date:"Nov 25, 2025", venue:"Business Incubation Centre",
+        seats:"50 teams left", prize:"₹1,00,000 + Seed Funding",
+        bannerClass:"banner-hackathon", typeClass:"type-competition", typeLabel:"Competition"
+      },
+    ];
+
+    const registered = new Set();
+    let activeType = 'all';
+    let currentEventId = null;
+
+    function renderEvents(list) {
+      const grid = document.getElementById('events-grid');
+      if (!list.length) { grid.innerHTML = '<p style="color:var(--text-muted);grid-column:1/-1;text-align:center;padding:3rem">No events found.</p>'; return; }
+      grid.innerHTML = list.map(e => {
+        const isReg = registered.has(e.id);
+        return `
+        <div class="event-card">
+          <div class="event-banner ${e.bannerClass}">
+            <span>${e.icon}</span>
+            <span class="event-type-badge ${e.typeClass}">${e.typeLabel}</span>
+            <span class="event-seats-badge" style="color:var(--text-muted)">${e.seats}</span>
+          </div>
+          <div class="event-body">
+            <div class="event-name">${e.name}</div>
+            <div class="event-desc">${e.desc}</div>
+            <div class="event-meta">
+              <div class="event-meta-row">📅 <strong>${e.date}</strong></div>
+              <div class="event-meta-row">📍 <strong>${e.venue}</strong></div>
+              <div class="event-meta-row">🏅 <strong>${e.prize}</strong></div>
+            </div>
+            <button class="register-btn ${isReg ? 'registered':''}" id="reg-btn-${e.id}" onclick="openModal(${e.id})">
+              ${isReg ? '✅ Registered' : '🎟️ Register Now'}
+            </button>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    function openModal(id) {
+      if (registered.has(id)) return;
+      currentEventId = id;
+      const ev = events.find(e => e.id === id);
+      document.getElementById('modal-event-title').textContent = '🎟️ Register for: ' + ev.name;
+      document.getElementById('reg-modal').classList.add('open');
+    }
+
+    document.getElementById('modal-cancel-btn').addEventListener('click', () => {
+      document.getElementById('reg-modal').classList.remove('open');
+    });
+
+    document.getElementById('modal-submit-btn').addEventListener('click', () => {
+      const name  = document.getElementById('reg-name').value.trim();
+      const roll  = document.getElementById('reg-roll').value.trim();
+      const email = document.getElementById('reg-email').value.trim();
+      if (!name || !roll || !email) { alert('Please fill all required fields.'); return; }
+      registered.add(currentEventId);
+      document.getElementById('reg-modal').classList.remove('open');
+      alert(`✅ Successfully registered for the event!\nWe'll send confirmation to ${email}`);
+      // Re-render
+      const filtered = activeType === 'all' ? events : events.filter(e => e.type === activeType);
+      renderEvents(filtered);
+    });
+
+    // Filters
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeType = btn.dataset.type;
+        const filtered = activeType === 'all' ? events : events.filter(e => e.type === activeType);
+        renderEvents(filtered);
+      });
+    });
+
+    document.getElementById('hero-explore-btn').addEventListener('click', () => {
+      document.getElementById('events').scrollIntoView({ behavior:'smooth' });
+    });
+    document.getElementById('hero-schedule-btn').addEventListener('click', () => {
+      document.getElementById('schedule').scrollIntoView({ behavior:'smooth' });
+    });
+
+    renderEvents(events);
+  </script>
+</body>
+</html>

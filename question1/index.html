@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="University Automated Student Placement Portal – browse opportunities, company profiles, and upcoming recruitment drives." />
+  <title>Student Placement Portal | University Placement Cell</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-primary: #0a0e1a;
+      --bg-secondary: #111827;
+      --bg-card: #1a2235;
+      --accent-blue: #3b82f6;
+      --accent-purple: #8b5cf6;
+      --accent-cyan: #06b6d4;
+      --accent-green: #10b981;
+      --accent-orange: #f59e0b;
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --border: rgba(59, 130, 246, 0.15);
+      --gradient-hero: linear-gradient(135deg, #0a0e1a 0%, #1a103a 50%, #0d1a2e 100%);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10, 14, 26, 0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+    .nav-logo {
+      font-size: 1.25rem;
+      font-weight: 800;
+      background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent-blue); }
+    .nav-cta {
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      color: #fff;
+      border: none;
+      padding: 0.5rem 1.25rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(59,130,246,0.4); }
+
+    /* ── HERO ── */
+    .hero {
+      background: var(--gradient-hero);
+      padding: 6rem 2rem 5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(139,92,246,0.12) 0%, transparent 70%);
+      top: -200px; left: 50%; transform: translateX(-50%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(59,130,246,0.15);
+      border: 1px solid rgba(59,130,246,0.3);
+      color: var(--accent-blue);
+      padding: 0.35rem 1rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 1.25rem;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple), var(--accent-cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      max-width: 600px;
+      margin: 0 auto 2.5rem;
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      line-height: 1.7;
+    }
+    .hero-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      color: #fff; border: none;
+      padding: 0.85rem 2rem; border-radius: 10px;
+      font-size: 0.95rem; font-weight: 600; cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      text-decoration: none;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(59,130,246,0.4); }
+    .btn-outline {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      padding: 0.85rem 2rem; border-radius: 10px;
+      font-size: 0.95rem; font-weight: 600; cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      text-decoration: none;
+    }
+    .btn-outline:hover { border-color: var(--accent-blue); background: rgba(59,130,246,0.08); }
+
+    /* ── STATS ── */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      max-width: 1100px;
+      margin: -3rem auto 0;
+      padding: 0 2rem;
+      position: relative;
+      z-index: 10;
+    }
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.75rem 1.5rem;
+      text-align: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .stat-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
+    .stat-value {
+      font-size: 2.5rem; font-weight: 800;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .stat-label { color: var(--text-secondary); font-size: 0.875rem; margin-top: 0.25rem; }
+
+    /* ── SECTION ── */
+    section { padding: 5rem 2rem; max-width: 1200px; margin: 0 auto; }
+    .section-header { text-align: center; margin-bottom: 3rem; }
+    .section-header h2 {
+      font-size: clamp(1.5rem, 3vw, 2.25rem);
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+    .section-header p { color: var(--text-secondary); font-size: 1rem; max-width: 550px; margin: 0 auto; }
+
+    /* ── COMPANIES ── */
+    .companies-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+    .company-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.75rem;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      cursor: pointer;
+    }
+    .company-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+      border-color: var(--accent-blue);
+    }
+    .company-logo {
+      width: 52px; height: 52px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .company-name { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .company-role { color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.75rem; }
+    .company-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .tag {
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+    .tag-blue { background: rgba(59,130,246,0.15); color: var(--accent-blue); }
+    .tag-green { background: rgba(16,185,129,0.15); color: var(--accent-green); }
+    .tag-purple { background: rgba(139,92,246,0.15); color: var(--accent-purple); }
+    .tag-orange { background: rgba(245,158,11,0.15); color: var(--accent-orange); }
+
+    /* ── STUDENT PROFILES ── */
+    .profiles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1.5rem;
+    }
+    .profile-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .profile-card:hover { transform: translateY(-4px); box-shadow: 0 12px 36px rgba(0,0,0,0.4); }
+    .avatar {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      margin: 0 auto 1rem;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+    }
+    .profile-name { font-weight: 700; font-size: 1.05rem; margin-bottom: 0.25rem; }
+    .profile-dept { color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 0.75rem; }
+    .profile-placed {
+      display: inline-block;
+      padding: 0.3rem 0.85rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: rgba(16,185,129,0.15);
+      color: var(--accent-green);
+      margin-bottom: 0.5rem;
+    }
+    .profile-package { font-size: 0.85rem; color: var(--text-secondary); }
+    .profile-package span { color: var(--accent-orange); font-weight: 700; }
+
+    /* ── DRIVES ── */
+    .drives-list { display: flex; flex-direction: column; gap: 1rem; }
+    .drive-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .drive-item:hover { border-color: var(--accent-purple); box-shadow: 0 8px 30px rgba(0,0,0,0.4); }
+    .drive-date {
+      min-width: 72px;
+      text-align: center;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      border-radius: 12px;
+      padding: 0.85rem 0.5rem;
+    }
+    .drive-date .day { font-size: 1.75rem; font-weight: 800; line-height: 1; }
+    .drive-date .month { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; }
+    .drive-info { flex: 1; }
+    .drive-company { font-weight: 700; font-size: 1rem; margin-bottom: 0.25rem; }
+    .drive-details { color: var(--text-secondary); font-size: 0.85rem; }
+    .drive-badge {
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .badge-open { background: rgba(16,185,129,0.15); color: var(--accent-green); }
+    .badge-soon { background: rgba(245,158,11,0.15); color: var(--accent-orange); }
+
+    /* ── ELIGIBILITY ── */
+    .eligibility-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    .eligibility-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+    }
+    .eligibility-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 1rem; color: var(--accent-cyan); }
+    .eligibility-card ul { list-style: none; }
+    .eligibility-card ul li {
+      display: flex; align-items: center; gap: 0.6rem;
+      color: var(--text-secondary); font-size: 0.875rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .eligibility-card ul li:last-child { border-bottom: none; }
+    .eligibility-card ul li::before { content: '✓'; color: var(--accent-green); font-weight: 700; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 2rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+    footer span { color: var(--accent-blue); font-weight: 600; }
+
+    @media (max-width: 640px) {
+      nav .nav-links { display: none; }
+      .drive-item { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">🎓 PlacementHub</div>
+    <ul class="nav-links">
+      <li><a href="#companies">Companies</a></li>
+      <li><a href="#profiles">Students</a></li>
+      <li><a href="#drives">Drives</a></li>
+      <li><a href="#eligibility">Eligibility</a></li>
+    </ul>
+    <button class="nav-cta" id="register-btn">Register Now</button>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-badge">🚀 2025–26 Placement Season Open</div>
+    <h1>Your Dream Career <br /><span>Starts Here</span></h1>
+    <p>Automated Student Placement Portal connecting ambitious students with top-tier companies through smart recruitment drives and transparent placement statistics.</p>
+    <div class="hero-btns">
+      <a href="#drives" class="btn-primary" id="view-drives-btn">View Upcoming Drives</a>
+      <a href="#companies" class="btn-outline" id="explore-companies-btn">Explore Companies</a>
+    </div>
+  </header>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat-card">
+      <div class="stat-value">94%</div>
+      <div class="stat-label">Placement Rate</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">320+</div>
+      <div class="stat-label">Students Placed</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">₹18 LPA</div>
+      <div class="stat-label">Highest Package</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">85+</div>
+      <div class="stat-label">Partner Companies</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">₹7.2 LPA</div>
+      <div class="stat-label">Average Package</div>
+    </div>
+  </div>
+
+  <!-- COMPANIES -->
+  <section id="companies">
+    <div class="section-header">
+      <h2>Our Recruiting Partners</h2>
+      <p>Top companies visiting campus this season for full-time roles and internships.</p>
+    </div>
+    <div class="companies-grid">
+      <div class="company-card">
+        <div class="company-logo" style="background:rgba(59,130,246,0.15)">🏢</div>
+        <div class="company-name">TCS – Tata Consultancy</div>
+        <div class="company-role">Software Engineer / Analyst</div>
+        <div class="company-tags">
+          <span class="tag tag-blue">IT Services</span>
+          <span class="tag tag-green">₹4.5 LPA</span>
+        </div>
+      </div>
+      <div class="company-card">
+        <div class="company-logo" style="background:rgba(245,158,11,0.15)">⚡</div>
+        <div class="company-name">Infosys</div>
+        <div class="company-role">Systems Engineer</div>
+        <div class="company-tags">
+          <span class="tag tag-orange">Consulting</span>
+          <span class="tag tag-green">₹5 LPA</span>
+        </div>
+      </div>
+      <div class="company-card">
+        <div class="company-logo" style="background:rgba(139,92,246,0.15)">🔷</div>
+        <div class="company-name">Wipro Technologies</div>
+        <div class="company-role">Project Engineer</div>
+        <div class="company-tags">
+          <span class="tag tag-purple">Cloud</span>
+          <span class="tag tag-green">₹4.8 LPA</span>
+        </div>
+      </div>
+      <div class="company-card">
+        <div class="company-logo" style="background:rgba(6,182,212,0.15)">🌐</div>
+        <div class="company-name">Accenture</div>
+        <div class="company-role">Associate Software Engineer</div>
+        <div class="company-tags">
+          <span class="tag tag-blue">MNC</span>
+          <span class="tag tag-green">₹6.5 LPA</span>
+        </div>
+      </div>
+      <div class="company-card">
+        <div class="company-logo" style="background:rgba(16,185,129,0.15)">💡</div>
+        <div class="company-name">Capgemini</div>
+        <div class="company-role">Analyst / Developer</div>
+        <div class="company-tags">
+          <span class="tag tag-green">Digital</span>
+          <span class="tag tag-blue">₹5.5 LPA</span>
+        </div>
+      </div>
+      <div class="company-card">
+        <div class="company-logo" style="background:rgba(245,158,11,0.15)">🚀</div>
+        <div class="company-name">Amazon (AWS)</div>
+        <div class="company-role">Cloud Support Engineer</div>
+        <div class="company-tags">
+          <span class="tag tag-orange">Product</span>
+          <span class="tag tag-green">₹18 LPA</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STUDENT PROFILES -->
+  <section id="profiles" style="background: rgba(26,34,53,0.4); border-radius:24px; margin:0 auto 3rem; max-width:1200px; padding:4rem 2rem;">
+    <div class="section-header">
+      <h2>Recently Placed Students</h2>
+      <p>Congratulations to our star performers of the 2025 batch!</p>
+    </div>
+    <div class="profiles-grid">
+      <div class="profile-card">
+        <div class="avatar">👨‍💻</div>
+        <div class="profile-name">Arjun Mehta</div>
+        <div class="profile-dept">B.E. Computer Science</div>
+        <span class="profile-placed">✅ Placed</span>
+        <div class="profile-package">Package: <span>₹18 LPA</span></div>
+        <div class="profile-package" style="margin-top:4px">@ Amazon (AWS)</div>
+      </div>
+      <div class="profile-card">
+        <div class="avatar">👩‍💻</div>
+        <div class="profile-name">Priya Sharma</div>
+        <div class="profile-dept">B.E. Information Technology</div>
+        <span class="profile-placed">✅ Placed</span>
+        <div class="profile-package">Package: <span>₹8 LPA</span></div>
+        <div class="profile-package" style="margin-top:4px">@ Accenture</div>
+      </div>
+      <div class="profile-card">
+        <div class="avatar">🧑‍💼</div>
+        <div class="profile-name">Rahul Verma</div>
+        <div class="profile-dept">B.E. Electronics & Comm.</div>
+        <span class="profile-placed">✅ Placed</span>
+        <div class="profile-package">Package: <span>₹5.5 LPA</span></div>
+        <div class="profile-package" style="margin-top:4px">@ Wipro</div>
+      </div>
+      <div class="profile-card">
+        <div class="avatar">👩‍🎓</div>
+        <div class="profile-name">Sneha Reddy</div>
+        <div class="profile-dept">B.E. Computer Science</div>
+        <span class="profile-placed">✅ Placed</span>
+        <div class="profile-package">Package: <span>₹7 LPA</span></div>
+        <div class="profile-package" style="margin-top:4px">@ Capgemini</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RECRUITMENT DRIVES -->
+  <section id="drives">
+    <div class="section-header">
+      <h2>Upcoming Recruitment Drives</h2>
+      <p>Register early and prepare for these exciting on-campus drives.</p>
+    </div>
+    <div class="drives-list">
+      <div class="drive-item">
+        <div class="drive-date">
+          <div class="day">22</div>
+          <div class="month">Oct</div>
+        </div>
+        <div class="drive-info">
+          <div class="drive-company">Amazon – Cloud Support Engineer</div>
+          <div class="drive-details">Venue: Seminar Hall A &nbsp;|&nbsp; CGPA ≥ 7.5 &nbsp;|&nbsp; CSE / IT branches</div>
+        </div>
+        <span class="drive-badge badge-open">Open</span>
+      </div>
+      <div class="drive-item">
+        <div class="drive-date" style="background: linear-gradient(135deg,#f59e0b,#ef4444)">
+          <div class="day">28</div>
+          <div class="month">Oct</div>
+        </div>
+        <div class="drive-info">
+          <div class="drive-company">TCS – National Qualifier Test (NQT)</div>
+          <div class="drive-details">Venue: Computer Lab Block B &nbsp;|&nbsp; CGPA ≥ 6.0 &nbsp;|&nbsp; All branches</div>
+        </div>
+        <span class="drive-badge badge-soon">Closing Soon</span>
+      </div>
+      <div class="drive-item">
+        <div class="drive-date">
+          <div class="day">05</div>
+          <div class="month">Nov</div>
+        </div>
+        <div class="drive-info">
+          <div class="drive-company">Infosys – InfyTQ Assessment</div>
+          <div class="drive-details">Venue: Main Auditorium &nbsp;|&nbsp; CGPA ≥ 6.5 &nbsp;|&nbsp; CSE / ECE / EEE</div>
+        </div>
+        <span class="drive-badge badge-open">Open</span>
+      </div>
+      <div class="drive-item">
+        <div class="drive-date">
+          <div class="day">12</div>
+          <div class="month">Nov</div>
+        </div>
+        <div class="drive-info">
+          <div class="drive-company">Accenture – Off-Campus Drive</div>
+          <div class="drive-details">Venue: Online (Teams) &nbsp;|&nbsp; CGPA ≥ 7.0 &nbsp;|&nbsp; CSE / IT / MCA</div>
+        </div>
+        <span class="drive-badge badge-open">Open</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ELIGIBILITY -->
+  <section id="eligibility">
+    <div class="section-header">
+      <h2>Eligibility Criteria</h2>
+      <p>Ensure you meet the requirements before registering for drives.</p>
+    </div>
+    <div class="eligibility-grid">
+      <div class="eligibility-card">
+        <h3>🎓 Academic Requirements</h3>
+        <ul>
+          <li>Minimum CGPA of 6.0 (company-specific varies)</li>
+          <li>No active backlogs at time of drive</li>
+          <li>10th &amp; 12th marks ≥ 60%</li>
+          <li>Regular full-time UG students only</li>
+        </ul>
+      </div>
+      <div class="eligibility-card">
+        <h3>📝 Registration Process</h3>
+        <ul>
+          <li>Register via the Placement Portal profile</li>
+          <li>Upload resume (PDF, max 2MB)</li>
+          <li>Obtain HOD approval before drive</li>
+          <li>Carry ID proof on drive day</li>
+        </ul>
+      </div>
+      <div class="eligibility-card">
+        <h3>💼 Skills &amp; Preparation</h3>
+        <ul>
+          <li>Aptitude &amp; reasoning proficiency</li>
+          <li>Strong programming fundamentals</li>
+          <li>Communication &amp; group discussion skills</li>
+          <li>Domain knowledge aligned to role</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2025 <span>University Placement Cell</span> — Automated Student Placement Portal. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>
